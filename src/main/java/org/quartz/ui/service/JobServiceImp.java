@@ -5,6 +5,7 @@ import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.ui.model.QuartzJobDetail;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -27,7 +28,11 @@ public class JobServiceImp implements JobService {
                 for (JobKey jobKey : jobKeys) {
                     List<Trigger> triggersOfJob = (List<Trigger>) scheduler.getTriggersOfJob(jobKey);
                     Trigger first = triggersOfJob.getFirst();
-                    
+                    Date nextFireTime = first.getNextFireTime();
+                    Date previousFireTime = first.getPreviousFireTime();
+                    Date startTime = first.getStartTime();
+                    QuartzJobDetail job = new QuartzJobDetail(jobKey.getName(), jobGroupName, nextFireTime, previousFireTime, startTime);
+                    jobs.add(job);
                 }
             }
         } catch (SchedulerException e) {
